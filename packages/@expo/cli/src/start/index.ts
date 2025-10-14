@@ -5,6 +5,7 @@ import { Command } from '../../bin/cli';
 import { assertArgs, getProjectRoot, printHelp } from '../utils/args';
 import { logCmdError } from '../utils/errors';
 
+
 export const expoStart: Command = async (argv) => {
   const args = assertArgs(
     {
