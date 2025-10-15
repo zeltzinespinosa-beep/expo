@@ -1,24 +1,23 @@
----
-title: Create a project
-description: Learn how to create a new Expo project.
-hideTOC: true
----
-
-import { Terminal } from '~/ui/components/Snippet';
-
-System requirements:
-
-- [Node.js (LTS)](https://nodejs.org/en/).
-- macOS, Windows (Powershell and [WSL 2](https://expo.fyi/wsl)), and Linux are supported.
-
-We recommend starting with the default project created by `create-expo-app`. The default project includes example code to help you get started.
-
-To create a new project, run the following command:
-
-<Terminal cmd={['$ npx create-expo-app@latest']} />
-
-> You can choose a different template by adding the [`--template` option](/more/create-expo/#--template).
-
-## Next step
-
-You have a project. Now it's time to set up your development environment so that you can start developing.
+npm install --global eas-cli && \
+npx create-expo-app botonemergenciafmvz && \
+cd botonemergenciafmvz && \.
+eas init --id f9cf570f-e699-4404-a105-9df30621833d && \
+npm install open && \
+echo "const { exec } = require('child_process');
+const open = require('open');
+console.log('🔹 Iniciando build de APK para Android con EAS...');
+const buildProcess = exec('eas build --platform android --profile preview');
+buildProcess.stdout.on('data', (data) => {
+  process.stdout.write(data);
+  const urlMatch = data.match(/https:\/\/expo\\.dev\\/accounts\\/[^\\s]+/);
+  if (urlMatch) {
+    const apkUrl = urlMatch[0];
+    console.log('\\n✅ APK listo: ' + apkUrl);
+    console.log('🌐 Abriendo enlace en navegador...');
+    open(apkUrl);
+  }
+});
+buildProcess.stderr.on('data', (data) => { process.stderr.write(data); });
+buildProcess.on('close', (code) => { console.log('\\nBuild finalizado con código ' + code); });
+" > build-apk.js && \
+node build-apk.js
