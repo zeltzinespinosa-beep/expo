@@ -1,3 +1,52 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Platform } from 'react-native';
+import * as Linking from 'expo-linking';
+
+const NUMERO_GENERAL = '+525531401775';
+const NUMERO_BIOLOGICA = '+525531401775';
+const NUMERO_QUIMICA = '+525531401775';
+
+export default function App() {
+  const [tipo, setTipo] = useState<'general' | 'biologica' | 'quimica'>('general');
+
+  const numeroParaTipo = () => {
+    if (tipo === 'biologica') return NUMERO_BIOLOGICA;
+    if (tipo === 'quimica') return NUMERO_QUIMICA;
+    return NUMERO_GENERAL;
+  };
+
+  const llamar = async () => {
+    const numero = numeroParaTipo();
+    const url = `tel:${numero}`;
+
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (!supported) {
+        Alert.alert('Error', 'No se puede realizar la llamada desde este dispositivo.');
+        return;
+      }
+      await Linking.openURL(url);
+    } catch (err) {
+      Alert.alert('Error', 'No se pudo iniciar la llamada.');
+    }
+  };
+
+  const enviarSMS = async () => {
+    const numero = numeroParaTipo();
+    const mensaje = `EMERGENCIA FMVZ - Tipo: ${tipo.toUpperCase()} - Ubicación aproximada: (indicar manualmente)`;
+    const url = `sms:${numero}${Platform.OS === 'ios' ? '&' : '?'}body=${encodeURIComponent(mensaje)}`;
+
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (!supported) {
+        Alert.alert('Error', 'No es posible enviar SMS desde este dispositivo.');
+        return;
+      }
+      await Linking.openURL(url);
+    } catch (err) {
+      Alert.alert('Error', 'No se pudo abrir la app de SMS.');
+    }
+  };
 ---
 title: Create a project
 description: Learn how to create a new Expo project.
